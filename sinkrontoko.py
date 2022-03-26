@@ -11,16 +11,16 @@ while (1):
         connection_to_bank = 1
         # open connection db toko online
         try:
-            connToko = pymysql.connect(host='localhost', user='root',
-                                       password='', database='db_')
+            connToko = pymysql.connect(host='sql4.freemysqlhosting.net', user='sql4481757',
+                                       password='ACsYJCpvhb', database='sql4481757')
             curToko = connToko.cursor()
         except:
             print('Tidak bisa terkoneksi ke TOKO!!!')
 
         # open connection db bank
         try:
-            connBank = pymysql.connect(host='localhost', user='root',
-                                       password='', database='db_')
+            connBank = pymysql.connect(host='sql4.freemysqlhosting.net', user='sql4481754',
+                                       password='JPkreVD6Wb', database='sql4481754')
             curBank = connBank.cursor()
         except:
             print('Tidak bisa terkoneksi ke Bank!!!')
@@ -80,8 +80,14 @@ while (1):
                     connToko.commit()
 
                     if(connection_to_bank==1):
+                        # delete row in tb_integrasi in db_bank
                         delete_integrasi_bank = "DELETE FROM tb_integrasi WHERE id_transaksi = '%s'" % (dataIntegrasi[0])
                         curBank.execute(delete_integrasi_bank)
+                        connBank.commit()
+                        
+                        # delete row in tb_transaksi in db_bank
+                        delete_transaksi_bank = "DELETE FROM tb_transaksi WHERE id_transaksi = '%s'" % (dataIntegrasi[0])
+                        curBank.execute(delete_transaksi_bank)
                         connBank.commit()
 
 
