@@ -2,28 +2,30 @@ import time
 
 import pymysql
 from datetime import datetime
+import json
+import json
 
 while (1):
     first_boot = 1
-
+    now = datetime.now()
     try:
         connection_to_toko = 1
         # open connection db toko online
         try:
-            connToko = pymysql.connect(host='localhost', port=3308, user='root',
-                                       password='', database='modul1_toko')
+            connToko = pymysql.connect(host='localhost', user='root', port=3306,
+                                       password='5GYFmdYU8F', database='sql4479702')
             curToko = connToko.cursor()
         except:
             print('Tidak bisa terkoneksi ke TOKO!!!')
 
         # open connection db bank
         try:
-            connBank = pymysql.connect(host='localhost', port=3308, user='root',
-                                       password='', database='modul1_bank')
+            connBank = pymysql.connect(host='localhost', user='root',
+                                       password='6zJUzMLw8D', database='sql4479667')
             curBank = connBank.cursor()
         except:
             print('Tidak bisa terkoneksi ke Bank!!!')
-            connection_to_bank =0
+            connection_to_bank = 0
 
         sql_select = "SELECT * FROM tb_transaksi"
         curBank.execute(sql_select)
@@ -44,7 +46,7 @@ while (1):
                     if(data[0] == dataIntegrasi[0]):
                         a=1
                 if (a==0):
-                    print("-- RUN INSERTED FOR ID = %s" % (dataIntegrasi[0]))
+                    print("-- RUN INSERTED FOR ID = %s at %s" % (data[0], now))
                     val = (data[0], data[1], data[2], data[3], data[4])
                     insert_integrasi_bank = "INSERT INTO tb_integrasi (id_transaksi, no_rekening, tgl_transaksi, total_transaksi, status)" \
                                             "VALUES(%s, %s, %s, %s, %s)"
@@ -71,7 +73,7 @@ while (1):
                     if(dataIntegrasi[0] == data[0]):
                         a=1
                 if (a==0):
-                    print("-- RUN DELETE FOR ID = %s" % (dataIntegrasi[0]))
+                    print("-- RUN DELETE FOR ID = %s at %s" % (dataIntegrasi[0], now))
 
                     # delete row in tb_integrasi in db_toko
                     delete_integrasi_bank = "DELETE FROM tb_integrasi WHERE id_transaksi = '%s'" % (dataIntegrasi[0])
@@ -79,7 +81,14 @@ while (1):
                     connBank.commit()
 
                     if(connection_to_toko==1):
+                        # delete row in tb_integrasi in db_toko
                         delete_integrasi_toko = "DELETE FROM tb_integrasi WHERE id_transaksi = '%s'" % (dataIntegrasi[0])
+                        curToko.execute(delete_integrasi_toko)
+                        connToko.commit()
+
+                        # delete row in tb_transaksi in db_toko
+                        delete_integrasi_toko = "DELETE FROM tb_transaksi WHERE id_transaksi = '%s'" % (
+                        dataIntegrasi[0])
                         curToko.execute(delete_integrasi_toko)
                         connToko.commit()
 
@@ -91,7 +100,7 @@ while (1):
                     if(data[0] == dataIntegrasi[0]):
                         if(data != dataIntegrasi):
                             print("-- EVENT SUCCESS OR UPDATE DETECTED --")
-                            print("-- RUN UPDATE FOR ID = %s" % (dataIntegrasi[0]))
+                            print("-- RUN UPDATE FOR ID = %s at %s" % (dataIntegrasi[0], now))
                             val = (data[1], data[2], data[3], data[4], data[0])
                             update_integrasi_bank = "update tb_integrasi set no_rekening = %s, tgl_transaksi= %s," \
                                                     "total_transaksi = %s, status = %s where id_transaksi = %s"

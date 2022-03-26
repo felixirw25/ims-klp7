@@ -11,16 +11,16 @@ while (1):
         connection_to_bank = 1
         # open connection db toko online
         try:
-            connToko = pymysql.connect(host='localhost', port=3308, user='root',
-                                       password='', database='modul1_toko')
+            connToko = pymysql.connect(host='localhost', user='root',
+                                       password='', database='db_')
             curToko = connToko.cursor()
         except:
             print('Tidak bisa terkoneksi ke TOKO!!!')
 
         # open connection db bank
         try:
-            connBank = pymysql.connect(host='localhost', port=3308, user='root',
-                                       password='', database='modul1_bank')
+            connBank = pymysql.connect(host='localhost', user='root',
+                                       password='', database='db_')
             curBank = connBank.cursor()
         except:
             print('Tidak bisa terkoneksi ke Bank!!!')
@@ -45,7 +45,7 @@ while (1):
                     if(data[0] == dataIntegrasi[0]):
                         a=1
                 if (a==0):
-                    print("-- RUN INSERTED FOR ID = %s at %s --" % (dataIntegrasi[0], now))
+                    print("-- RUN INSERTED FOR ID = %s at %s" % (data[0], now))
                     val = (data[0], data[1], data[2], data[3], data[4])
                     insert_integrasi_toko = "INSERT INTO tb_integrasi (id_transaksi, no_rekening, tgl_transaksi, total_transaksi, status)" \
                                             "VALUES(%s, %s, %s, %s, %s)"
